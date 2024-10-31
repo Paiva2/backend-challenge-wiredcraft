@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: backend-challenge
+
+server:
+  port: 8081
