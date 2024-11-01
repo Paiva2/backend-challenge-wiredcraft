@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  database:
+    container_name: "backend-challenge"
+    image: "bitnami/postgresql"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=pg
+      - POSTGRES_PASSWORD=pg123
+      - POSTGRES_DB=backend-challenge
