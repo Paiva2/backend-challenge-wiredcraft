@@ -1,0 +1,5 @@
+package org.com.wired.domain.ports.outbound.utils;
+
+public interface PasswordUtilsPort {
+    String encode(String password);
+}
