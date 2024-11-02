@@ -54,7 +54,7 @@ public class GetProfileUserOutput {
     @NoArgsConstructor
     @Builder
     @Data
-    private static class AddressOutput {
+    public static class AddressOutput {
         private String street;
         private String number;
         private String neighbourhood;
