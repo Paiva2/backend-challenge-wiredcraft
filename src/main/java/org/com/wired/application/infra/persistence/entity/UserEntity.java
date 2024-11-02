@@ -51,6 +51,6 @@ public class UserEntity {
     @Column(name = "usr_deleted_at", nullable = true)
     private Date disabledAt;
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY)
     private AddressEntity address;
 }

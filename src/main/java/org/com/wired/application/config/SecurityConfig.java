@@ -1,6 +1,7 @@
 package org.com.wired.application.config;
 
 import jakarta.servlet.DispatcherType;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,10 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true)
+@AllArgsConstructor
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
         // Swagger
@@ -24,6 +27,8 @@ public class SecurityConfig {
         "/api/user/register",
         "/api/user/auth"
     };
+
+    private final SecurityFilter securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -40,9 +45,7 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable);
 
-       /* http.oauth2ResourceServer(oauth2 -> oauth2
-            .jwt(withDefaults())
-        );*/
+        http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

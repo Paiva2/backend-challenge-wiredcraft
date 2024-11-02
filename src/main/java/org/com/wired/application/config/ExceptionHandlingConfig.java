@@ -2,6 +2,7 @@ package org.com.wired.application.config;
 
 import org.com.wired.domain.usecase.common.exception.BadRequestException;
 import org.com.wired.domain.usecase.common.exception.ConflictException;
+import org.com.wired.domain.usecase.common.exception.ForbiddenException;
 import org.com.wired.domain.usecase.common.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,12 @@ public class ExceptionHandlingConfig {
     public ResponseEntity<LinkedHashMap<String, Object>> handleNotFoundException(Exception e) {
         LinkedHashMap<String, Object> errors = mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<LinkedHashMap<String, Object>> handleForbiddenException(Exception e) {
+        LinkedHashMap<String, Object> errors = mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
     }
 
     private LinkedHashMap<String, Object> mapErrors(String message, String exceptionName, Integer status) {

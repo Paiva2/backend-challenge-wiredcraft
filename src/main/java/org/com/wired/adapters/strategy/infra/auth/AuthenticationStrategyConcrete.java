@@ -3,6 +3,10 @@ package org.com.wired.adapters.strategy.infra.auth;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.List;
+
 @AllArgsConstructor
 @Component
 public class AuthenticationStrategyConcrete {
@@ -12,7 +16,11 @@ public class AuthenticationStrategyConcrete {
         return authenticationStrategy.createAuth(subject);
     }
 
-    public void verifyAuthentication(String token) {
-        authenticationStrategy.verifyAuth(token);
+    public String verifyAuthentication(String token) {
+        return authenticationStrategy.verifyAuth(token);
+    }
+
+    public List<String> getTokenClaims(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return authenticationStrategy.getClaimRoles(token);
     }
 }

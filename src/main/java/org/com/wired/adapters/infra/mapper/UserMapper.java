@@ -14,8 +14,9 @@ public class UserMapper {
 
         if (entityObject.getAddress() != null) {
             Address address = new Address();
-            BeanUtils.copyProperties(entityObject.getAddress(), address);
             user.setAddress(address);
+
+            BeanUtils.copyProperties(entityObject.getAddress(), user.getAddress());
         }
 
         return user;

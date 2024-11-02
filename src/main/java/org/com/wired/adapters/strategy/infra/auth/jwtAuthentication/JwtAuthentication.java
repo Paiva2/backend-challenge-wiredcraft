@@ -11,6 +11,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,8 +50,32 @@ public class JwtAuthentication implements AuthenticationStrategy {
     }
 
     @Override
-    public void verifyAuth(String jwt) {
+    public String verifyAuth(String jwt) {
+        String subject;
 
+        try {
+            subject = Jwts.parser()
+                .verifyWith(getPublicKey())
+                .build()
+                .parseSignedClaims(jwt)
+                .getPayload()
+                .getSubject();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return subject;
+    }
+
+    public List<String> getClaimRoles(String jwt) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        List<String> rolesString = (List<String>) Jwts.parser()
+            .verifyWith(getPublicKey())
+            .build()
+            .parseSignedClaims(jwt)
+            .getPayload()
+            .get("roles");
+
+        return rolesString;
     }
 
     private Date expirationTime() {
@@ -71,7 +96,7 @@ public class JwtAuthentication implements AuthenticationStrategy {
 
     private RSAPublicKey getPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] publicKeyBytes = pemKeyBytes(RSA_PUBLIC_KEY_STRING);
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(publicKeyBytes);
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
         KeyFactory rsaKeyInstance = KeyFactory.getInstance("RSA");
 
         return (RSAPublicKey) rsaKeyInstance.generatePublic(keySpec);
