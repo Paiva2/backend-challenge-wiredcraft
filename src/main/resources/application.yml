@@ -31,3 +31,8 @@ logging:
               servlet:
                 UserDetailsServiceAutoConfiguration: off
       hibernate: ERROR
+
+jwt:
+  keys:
+    private: ${JWT_PRIVATE_PEM}
+    public: ${JWT_PUBLIC_PEM}

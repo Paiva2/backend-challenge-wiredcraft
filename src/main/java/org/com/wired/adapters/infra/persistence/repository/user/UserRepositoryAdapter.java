@@ -22,6 +22,13 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<User> findById(Long id) {
+        Optional<UserEntity> userEntity = repository.findById(id);
+        if (userEntity.isEmpty()) return Optional.empty();
+        return Optional.of(UserMapper.toDomain(userEntity.get()));
+    }
+
+    @Override
     public User persist(User user) {
         UserEntity userEntity = repository.save(UserMapper.toPersistence(user));
         return UserMapper.toDomain(userEntity);

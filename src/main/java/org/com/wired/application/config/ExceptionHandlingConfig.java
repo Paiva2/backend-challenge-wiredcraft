@@ -2,6 +2,7 @@ package org.com.wired.application.config;
 
 import org.com.wired.domain.usecase.common.exception.BadRequestException;
 import org.com.wired.domain.usecase.common.exception.ConflictException;
+import org.com.wired.domain.usecase.common.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,7 +30,13 @@ public class ExceptionHandlingConfig {
         LinkedHashMap<String, Object> errors = mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
-    
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<LinkedHashMap<String, Object>> handleNotFoundException(Exception e) {
+        LinkedHashMap<String, Object> errors = mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+    }
+
     private LinkedHashMap<String, Object> mapErrors(String message, String exceptionName, Integer status) {
         return new LinkedHashMap<>() {{
             put("timestamp", new Date());

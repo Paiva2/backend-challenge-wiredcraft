@@ -14,4 +14,9 @@ public class PasswordUtilsAdapter implements PasswordUtilsPort {
     public String encode(String password) {
         return passwordEncoder.encode(password);
     }
+
+    @Override
+    public boolean matches(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
 }

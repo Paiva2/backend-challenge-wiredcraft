@@ -21,7 +21,8 @@ public class SecurityConfig {
         "/v3/api-docs/**",
         "/swagger-ui/**",
         // Application
-        "/api/user/register"
+        "/api/user/register",
+        "/api/user/auth"
     };
 
     @Bean
@@ -38,6 +39,10 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable);
+
+       /* http.oauth2ResourceServer(oauth2 -> oauth2
+            .jwt(withDefaults())
+        );*/
 
         return http.build();
     }
