@@ -26,7 +26,7 @@ public class RegisterUserFactory {
             .userRepositoryPort(userRepositoryPort)
             .addressRepositoryPort(addressRepositoryPort)
             .passwordUtilsPort(passwordUtilsPort)
-            .validatorStrategyPort(new EmailValidatorStrategyConcrete(new EmailRegexValidator()))
+            .emailValidatorStrategyPort(new EmailValidatorStrategyConcrete(new EmailRegexValidator()))
             .build();
     }
 }

@@ -22,7 +22,7 @@ public class RegisterUserUsecase implements RegisterUserUsecasePort {
     private final UserRepositoryPort userRepositoryPort;
     private final AddressRepositoryPort addressRepositoryPort;
 
-    private final EmailValidatorStrategyPort validatorStrategyPort;
+    private final EmailValidatorStrategyPort emailValidatorStrategyPort;
     private final PasswordUtilsPort passwordUtilsPort;
 
     public RegisterUserOutput execute(User inputUser) {
@@ -49,13 +49,13 @@ public class RegisterUserUsecase implements RegisterUserUsecasePort {
     }
 
     private void checkEmailValidFormat(String email) {
-        if (!validatorStrategyPort.execute(email)) {
+        if (!emailValidatorStrategyPort.execute(email)) {
             throw new InvalidPropertyException("Invalid e-mail.");
         }
     }
 
     private void checkPasswordSize(String password) {
-        if (password.length() < 6) {
+        if (!passwordUtilsPort.hasNecessaryLength(password)) {
             throw new InvalidPropertyException("Password must have at least 6 characters.");
         }
     }

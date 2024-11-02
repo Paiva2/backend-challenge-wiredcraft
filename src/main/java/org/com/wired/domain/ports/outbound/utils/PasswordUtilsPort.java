@@ -4,4 +4,6 @@ public interface PasswordUtilsPort {
     String encode(String password);
 
     boolean matches(String rawPassword, String hashedPassword);
+
+    boolean hasNecessaryLength(String password);
 }
