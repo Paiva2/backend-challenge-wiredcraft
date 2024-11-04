@@ -29,4 +29,9 @@ public interface UserController {
     @PatchMapping("/profile/update")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     ResponseEntity<UpdateProfileUserOutput> updateProfile(Authentication authentication, @RequestBody @Valid UpdateProfileUserInput updateProfileUserInput);
+
+    @DeleteMapping("/disable")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    ResponseEntity<Void> disable(Authentication authentication);
+
 }

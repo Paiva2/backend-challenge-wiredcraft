@@ -9,6 +9,7 @@ import org.com.wired.application.gateway.output.GetProfileUserOutput;
 import org.com.wired.application.gateway.output.RegisterUserOutput;
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
 import org.com.wired.domain.usecase.user.authenticateUser.AuthenticateUserUsecase;
+import org.com.wired.domain.usecase.user.disableAccount.DisableAccountUsecase;
 import org.com.wired.domain.usecase.user.getProfileUser.GetProfileUserUsecase;
 import org.com.wired.domain.usecase.user.registerUser.RegisterUserUsecase;
 import org.com.wired.domain.usecase.user.updateProfileUser.UpdateProfileUserUsecase;
@@ -28,6 +29,7 @@ public class UserControllerImpl implements UserController {
     private final AuthenticateUserUsecase authenticateUserUsecase;
     private final GetProfileUserUsecase getProfileUserUsecase;
     private final UpdateProfileUserUsecase updateProfileUserUsecase;
+    private final DisableAccountUsecase disableAccountUsecase;
 
     private final AuthenticationStrategyConcrete authenticationStrategyConcrete;
 
@@ -57,5 +59,12 @@ public class UserControllerImpl implements UserController {
         Long subjectId = Long.parseLong(authentication.getName());
         UpdateProfileUserOutput output = updateProfileUserUsecase.execute(subjectId, UpdateProfileUserInput.toDomain(updateProfileUserInput));
         return new ResponseEntity<>(output, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Void> disable(Authentication authentication) {
+        Long subjectId = Long.parseLong(authentication.getName());
+        disableAccountUsecase.execute(subjectId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
