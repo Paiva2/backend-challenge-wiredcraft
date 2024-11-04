@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.com.wired.domain.entity.Address;
+import org.com.wired.domain.entity.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -73,5 +75,26 @@ public class UpdateProfileUserInput {
         private String zipCode;
 
         private String complement;
+    }
+
+    public static User toDomain(UpdateProfileUserInput input) {
+        return User.builder()
+            .email(input.getEmail())
+            .password(input.getPassword())
+            .name(input.getName())
+            .profilePictureUrl(input.getProfilePictureUrl())
+            .birthDate(input.getBirthDate())
+            .description(input.getDescription())
+            .address(Address.builder()
+                .street(input.getAddress().getStreet())
+                .number(input.getAddress().getNumber())
+                .neighbourhood(input.getAddress().getNeighbourhood())
+                .state(input.getAddress().getState())
+                .cityName(input.getAddress().getCityName())
+                .country(input.getAddress().getCountry())
+                .zipCode(input.getAddress().getZipCode())
+                .complement(input.getAddress().getComplement())
+                .build()
+            ).build();
     }
 }
