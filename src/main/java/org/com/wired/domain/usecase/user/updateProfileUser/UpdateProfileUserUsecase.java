@@ -2,7 +2,7 @@ package org.com.wired.domain.usecase.user.updateProfileUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import org.com.wired.application.gateway.input.UpdateProfileUserInput;
+
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
@@ -28,7 +28,7 @@ public class UpdateProfileUserUsecase implements UpdateProfileUserUsecasePort {
     private final PasswordUtilsPort passwordUtilsPort;
 
     @Override
-    public UpdateProfileUserOutput execute(Long userId, UpdateProfileUserInput input) {
+    public UpdateProfileUserOutput execute(Long userId, User input) {
         User user = findUser(userId);
         checkUserDisabled(user);
 
@@ -89,18 +89,18 @@ public class UpdateProfileUserUsecase implements UpdateProfileUserUsecasePort {
         }
     }
 
-    private void checkPasswordValid(UpdateProfileUserInput input) {
+    private void checkPasswordValid(User input) {
         if (!passwordUtilsPort.hasNecessaryLength(input.getPassword())) {
             throw new InvalidPropertyException("Password must have at least 6 characters.");
         }
     }
 
-    private void hashNewPassword(UpdateProfileUserInput input) {
+    private void hashNewPassword(User input) {
         String hashedPassword = passwordUtilsPort.encode(input.getPassword());
         input.setPassword(hashedPassword);
     }
 
-    private void fillUserUpdated(User user, UpdateProfileUserInput input) {
+    private void fillUserUpdated(User user, User input) {
         user.setEmail(input.getEmail());
         user.setName(input.getName());
         user.setBirthDate(input.getBirthDate());
@@ -116,7 +116,7 @@ public class UpdateProfileUserUsecase implements UpdateProfileUserUsecasePort {
         return userRepositoryPort.persist(user);
     }
 
-    private void fillAddressUpdated(Address address, UpdateProfileUserInput.AddressInput addressInput) {
+    private void fillAddressUpdated(Address address, Address addressInput) {
         address.setStreet(addressInput.getStreet());
         address.setState(addressInput.getState());
         address.setCityName(addressInput.getCityName());

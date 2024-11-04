@@ -1,8 +1,8 @@
 package org.com.wired.domain.ports.inbound;
 
-import org.com.wired.application.gateway.input.UpdateProfileUserInput;
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
+import org.com.wired.domain.entity.User;
 
 public interface UpdateProfileUserUsecasePort {
-    UpdateProfileUserOutput execute(Long userId, UpdateProfileUserInput input);
+    UpdateProfileUserOutput execute(Long userId, User input);
 }

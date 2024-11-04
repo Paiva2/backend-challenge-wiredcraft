@@ -55,7 +55,7 @@ public class UserControllerImpl implements UserController {
     @Transactional
     public ResponseEntity<UpdateProfileUserOutput> updateProfile(Authentication authentication, UpdateProfileUserInput updateProfileUserInput) {
         Long subjectId = Long.parseLong(authentication.getName());
-        UpdateProfileUserOutput output = updateProfileUserUsecase.execute(subjectId, updateProfileUserInput);
+        UpdateProfileUserOutput output = updateProfileUserUsecase.execute(subjectId, UpdateProfileUserInput.toDomain(updateProfileUserInput));
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 }
