@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,4 +54,7 @@ public class UserEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     private AddressEntity address;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<UserFollowerEntity> userFollowers;
 }

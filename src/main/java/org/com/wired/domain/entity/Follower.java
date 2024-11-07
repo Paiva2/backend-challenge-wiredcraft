@@ -12,18 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class User {
+public class Follower {
     private Long id;
-    private String email;
-    private String password;
-    private String name;
-    private String profilePictureUrl;
-    private Date birthDate;
-    private String description;
     private Date createdAt;
-    private Date updatedAt;
-    private Date disabledAt;
+    private User user;
 
-    private Address address;
     private List<UserFollower> userFollowers;
 }
