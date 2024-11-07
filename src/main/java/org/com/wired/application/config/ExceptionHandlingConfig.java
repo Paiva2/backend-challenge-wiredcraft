@@ -20,6 +20,11 @@ public class ExceptionHandlingConfig {
         return new ResponseEntity<>(mapErrors(e.getAllErrors().toString(), e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<LinkedHashMap<String, Object>> handleNullPointerException(NullPointerException e) {
+        return new ResponseEntity<>(mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.INTERNAL_SERVER_ERROR.value()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<LinkedHashMap<String, Object>> handleBadRequestException(Exception e) {
         LinkedHashMap<String, Object> errors = mapErrors(e.getMessage(), e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST.value());

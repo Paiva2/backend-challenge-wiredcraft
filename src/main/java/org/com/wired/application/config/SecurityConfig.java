@@ -40,10 +40,7 @@ public class SecurityConfig {
             req.anyRequest().authenticated();
         });
 
-        http.csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .formLogin(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 

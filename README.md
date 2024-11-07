@@ -5,6 +5,8 @@
 This is my solution of the above Backend Challenge using Java, it's a open-source challenge listed
 in https://github.com/CollabCodeTech/backend-challenges
 
+### [Solution Docs](docs.md)
+
 ### Technologies
 
 - Java 17
