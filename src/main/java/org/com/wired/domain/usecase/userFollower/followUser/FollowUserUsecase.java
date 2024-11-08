@@ -12,6 +12,7 @@ import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerReposit
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.usecase.common.exception.UserDisabledException;
 import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.userFollower.followUser.exception.InvalidFollowException;
 import org.com.wired.domain.usecase.userFollower.followUser.exception.UserAlreadyFollowingException;
 
 import java.util.Date;
@@ -33,6 +34,7 @@ public class FollowUserUsecase implements FollowUserUsecasePort {
         User userToFollow = findUser(userToFollowId);
         checkUserDisabled(userToFollow);
 
+        checkUserFollowingValid(user, userToFollow);
         checkUserAlreadyFollow(user, userToFollow);
 
         Follower followerFilled = fillFollower(user);
@@ -53,6 +55,12 @@ public class FollowUserUsecase implements FollowUserUsecasePort {
     private void checkUserDisabled(User user) {
         if (user.getDisabledAt() != null) {
             throw new UserDisabledException(user.getId().toString());
+        }
+    }
+
+    private void checkUserFollowingValid(User user, User userToFollow) {
+        if (user.getId().equals(userToFollow.getId())) {
+            throw new InvalidFollowException();
         }
     }
 
