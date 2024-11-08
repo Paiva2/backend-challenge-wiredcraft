@@ -3,7 +3,7 @@ package org.com.wired.domain.usecase.user.authenticateUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.com.wired.domain.entity.User;
-import org.com.wired.domain.ports.inbound.AuthenticateUserUsecasePort;
+import org.com.wired.domain.ports.inbound.usecase.AuthenticateUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.ports.outbound.utils.PasswordUtilsPort;
 import org.com.wired.domain.usecase.common.exception.UserDisabledException;

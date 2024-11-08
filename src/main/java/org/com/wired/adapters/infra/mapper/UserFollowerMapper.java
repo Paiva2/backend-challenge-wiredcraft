@@ -19,6 +19,12 @@ public class UserFollowerMapper {
             Follower follower = new Follower();
             copyProperties(entityObject.getFollower(), follower);
             userFollower.setFollower(follower);
+
+            if (entityObject.getFollower().getUser() != null) {
+                User user = new User();
+                copyProperties(entityObject.getFollower().getUser(), user);
+                userFollower.getFollower().setUser(user);
+            }
         }
 
         if (entityObject.getUser() != null) {
@@ -53,7 +59,7 @@ public class UserFollowerMapper {
             copyProperties(domainObject.getUser(), userEntity);
             entity.setUser(userEntity);
         }
-        
+
         return entity;
     }
 

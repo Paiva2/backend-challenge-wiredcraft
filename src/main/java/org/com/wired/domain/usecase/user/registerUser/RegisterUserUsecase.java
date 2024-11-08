@@ -5,7 +5,7 @@ import lombok.Builder;
 import org.com.wired.application.gateway.output.RegisterUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
-import org.com.wired.domain.ports.inbound.RegisterUserUsecasePort;
+import org.com.wired.domain.ports.inbound.usecase.RegisterUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.ports.outbound.strategy.EmailValidatorStrategyPort;

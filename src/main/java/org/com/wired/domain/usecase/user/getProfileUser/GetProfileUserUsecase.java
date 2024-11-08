@@ -5,7 +5,7 @@ import lombok.Builder;
 import org.com.wired.application.gateway.output.GetProfileUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
-import org.com.wired.domain.ports.inbound.GetProfileUserUsecasePort;
+import org.com.wired.domain.ports.inbound.usecase.GetProfileUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.usecase.common.exception.AddressNotFoundException;

@@ -13,4 +13,10 @@ public class DateUtilsAdapter implements DateUtilsPort {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         return formatter.format(date);
     }
+
+    @Override
+    public String dateTimeToOutputString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        return formatter.format(date);
+    }
 }

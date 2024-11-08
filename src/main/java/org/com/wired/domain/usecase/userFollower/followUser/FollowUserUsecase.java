@@ -6,7 +6,7 @@ import org.com.wired.application.gateway.output.FollowUserOutput;
 import org.com.wired.domain.entity.Follower;
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.entity.UserFollower;
-import org.com.wired.domain.ports.inbound.FollowUserUsecasePort;
+import org.com.wired.domain.ports.inbound.usecase.FollowUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.FollowerRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;

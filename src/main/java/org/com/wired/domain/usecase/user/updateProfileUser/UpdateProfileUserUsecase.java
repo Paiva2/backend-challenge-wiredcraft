@@ -6,7 +6,7 @@ import lombok.Builder;
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
-import org.com.wired.domain.ports.inbound.UpdateProfileUserUsecasePort;
+import org.com.wired.domain.ports.inbound.usecase.UpdateProfileUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.ports.outbound.strategy.EmailValidatorStrategyPort;

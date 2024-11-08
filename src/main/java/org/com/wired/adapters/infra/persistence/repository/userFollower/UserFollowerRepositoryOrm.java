@@ -1,6 +1,8 @@
 package org.com.wired.adapters.infra.persistence.repository.userFollower;
 
 import org.com.wired.application.infra.persistence.entity.UserFollowerEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +16,12 @@ public interface UserFollowerRepositoryOrm extends JpaRepository<UserFollowerEnt
         "WHERE uf.follower.user.id = :userId " +
         "AND uf.user.id = :userFollowingId")
     Optional<UserFollowerEntity> findFollowing(@Param("userId") Long userId, @Param("userFollowingId") Long userFollowingId);
+
+    @Query(value = "SELECT * FROM tb_users_followers uf " +
+        "JOIN tb_users usr ON usr.usr_id = uf.ufl_user_id " +
+        "JOIN tb_followers fol ON fol.fol_id = uf.ufl_follower_id " +
+        "JOIN tb_users ufol ON ufol.usr_id = fol.fol_user_id " +
+        "WHERE usr.usr_id = :userId " +
+        "AND (:followerName IS NULL OR lower(ufol.usr_name) LIKE concat('%', lower(:followerName), '%'))", nativeQuery = true)
+    Page<UserFollowerEntity> findUserFollowers(Long userId, String followerName, Pageable pageable);
 }

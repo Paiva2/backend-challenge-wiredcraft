@@ -4,4 +4,6 @@ import java.util.Date;
 
 public interface DateUtilsPort {
     String dateToOutputString(Date date);
+
+    String dateTimeToOutputString(Date date);
 }
