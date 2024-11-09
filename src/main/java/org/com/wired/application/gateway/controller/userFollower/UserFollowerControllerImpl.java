@@ -5,6 +5,8 @@ import org.com.wired.application.gateway.output.FollowUserOutput;
 import org.com.wired.domain.usecase.userFollower.followUser.FollowUserUsecase;
 import org.com.wired.domain.usecase.userFollower.listFollowers.ListFollowersUsecase;
 import org.com.wired.domain.usecase.userFollower.listFollowers.dto.ListUserFollowersPageDTO;
+import org.com.wired.domain.usecase.userFollower.listFollowing.ListFollowingUsecase;
+import org.com.wired.domain.usecase.userFollower.listFollowing.dto.ListFollowingDTO;
 import org.com.wired.domain.usecase.userFollower.unfollowUser.UnfollowUserUsecase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ public class UserFollowerControllerImpl implements UserFollowerController {
     private final FollowUserUsecase followUserUsecase;
     private final UnfollowUserUsecase unfollowUserUsecase;
     private final ListFollowersUsecase listFollowersUsecase;
+    private final ListFollowingUsecase listFollowingUsecase;
 
     @Override
     @Transactional
@@ -31,6 +34,13 @@ public class UserFollowerControllerImpl implements UserFollowerController {
     public ResponseEntity<ListUserFollowersPageDTO> listFollowers(Authentication authentication, Integer page, Integer size, String followerName, String sort) {
         Long subjectId = parseSubjectId(authentication);
         ListUserFollowersPageDTO output = listFollowersUsecase.execute(subjectId, page, size, followerName, sort);
+        return new ResponseEntity<>(output, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ListFollowingDTO> listFollowing(Authentication authentication, Integer page, Integer size, String followingName, String sort) {
+        Long subjectId = parseSubjectId(authentication);
+        ListFollowingDTO output = listFollowingUsecase.execute(subjectId, page, size, followingName, sort);
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 

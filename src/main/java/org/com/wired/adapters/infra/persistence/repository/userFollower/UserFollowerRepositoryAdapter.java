@@ -6,6 +6,7 @@ import org.com.wired.application.infra.persistence.entity.UserFollowerEntity;
 import org.com.wired.domain.entity.UserFollower;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
 import org.com.wired.domain.usecase.userFollower.listFollowers.dto.ListUserFollowersPageDTO;
+import org.com.wired.domain.usecase.userFollower.listFollowing.dto.ListFollowingDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,21 @@ public class UserFollowerRepositoryAdapter implements UserFollowerRepositoryPort
     @Override
     public void remove(UserFollower userFollower) {
         repository.delete(UserFollowerMapper.toPersistence(userFollower));
+    }
+
+    @Override
+    public ListFollowingDTO listFollowing(Long userId, int page, int size, String followingName, String sort) {
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.fromString(sort), "usr.usr_name");
+        Page<UserFollowerEntity> userFollowingPage = repository.findUserFollowersByFollowUserId(userId, followingName, pageable);
+        Page<UserFollower> userFollowing = userFollowingPage.map(UserFollowerMapper::toDomain);
+
+        return ListFollowingDTO.builder()
+            .page(userFollowingPage.getNumber() + 1)
+            .size(userFollowingPage.getSize())
+            .total(userFollowingPage.getTotalElements())
+            .isLast(userFollowingPage.isLast())
+            .followers(userFollowing.stream().map(ListFollowingDTO::toUserFollowingDTO).toList())
+            .build();
     }
 
     @Override
