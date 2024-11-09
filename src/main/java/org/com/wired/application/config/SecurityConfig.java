@@ -23,6 +23,9 @@ public class SecurityConfig {
         // Swagger
         "/v3/api-docs/**",
         "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/swagger-ui/index.html",
+        "/webjars/swagger-ui/**",
         // Application
         "/api/user/register",
         "/api/user/auth"
@@ -37,10 +40,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests(req -> {
             req.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll();
             req.requestMatchers(AUTH_WHITELIST).permitAll();
-            req.anyRequest().authenticated();
+            req.anyRequest().permitAll();
         });
 
-        http.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable)
+            .cors(AbstractHttpConfigurer::disable);
 
         http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
 

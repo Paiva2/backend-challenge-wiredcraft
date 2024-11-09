@@ -24,8 +24,11 @@ import java.util.List;
 public class SecurityFilter extends OncePerRequestFilter {
     private static final String[] AUTH_WHITELIST = {
         // Swagger
-        "/v3/api-docs/**",
+        "/swagger-ui/index.html",
+        "/v3/api-docs",
         "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/webjars/swagger-ui/**",
         // Application
         "/api/user/register",
         "/api/user/auth"
@@ -68,7 +71,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) {
-        return List.of(AUTH_WHITELIST).contains(request.getServletPath());
+        return List.of(AUTH_WHITELIST).contains(request.getServletPath()) || request.getServletPath().contains("swagger");
     }
 
     private String getBearerToken(HttpServletRequest request) {
