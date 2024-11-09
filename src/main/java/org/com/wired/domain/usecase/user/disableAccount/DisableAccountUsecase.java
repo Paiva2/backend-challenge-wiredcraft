@@ -5,8 +5,7 @@ import lombok.Builder;
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.ports.inbound.usecase.DisableAccountUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 
 import java.util.Date;
 
@@ -14,23 +13,13 @@ import java.util.Date;
 @Builder
 public class DisableAccountUsecase implements DisableAccountUsecasePort {
     private final UserRepositoryPort userRepositoryPort;
+    private final FindUserUsecase findUserUsecase;
 
     @Override
     public void execute(Long id) {
-        User user = checkUserExists(id);
-        checkUserDisabled(user);
+        User user = findUserUsecase.execute(id);
 
         user.setDisabledAt(new Date());
         userRepositoryPort.persist(user);
-    }
-
-    private User checkUserExists(Long id) {
-        return userRepositoryPort.findById(id).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void checkUserDisabled(User user) {
-        if (user.getDisabledAt() != null) {
-            throw new UserDisabledException(user.getId().toString());
-        }
     }
 }

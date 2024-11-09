@@ -5,10 +5,8 @@ import org.com.wired.application.gateway.output.GetProfileUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
-import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.usecase.common.exception.AddressNotFoundException;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Optional;
 
@@ -27,7 +24,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class GetProfileUserUsecaseTest {
     @Mock
-    private UserRepositoryPort userRepositoryPort;
+    private FindUserUsecase findUserUsecase;
 
     @Mock
     private AddressRepositoryPort addressRepositoryPort;
@@ -37,47 +34,9 @@ class GetProfileUserUsecaseTest {
     @BeforeEach
     void setUp() {
         this.sut = GetProfileUserUsecase.builder()
-            .userRepositoryPort(userRepositoryPort)
+            .findUserUsecase(findUserUsecase)
             .addressRepositoryPort(addressRepositoryPort)
             .build();
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserNotFound() {
-        Long mockSutInput = 1L;
-
-        when(userRepositoryPort.findById(mockSutInput)).thenReturn(Optional.empty());
-
-        Exception error = assertThrows(UserNotFoundException.class, () -> {
-            sut.execute(mockSutInput);
-        });
-
-        assertEquals("User not found!", error.getMessage());
-        assertEquals("UserNotFoundException", error.getClass().getSimpleName());
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserIsDisabled() {
-        Long mockSutInput = 1L;
-
-        User userMock = mockUser(
-            1L,
-            "any_name",
-            "any_email",
-            "any_profile_pic",
-            new Date(),
-            "any_description"
-        );
-        userMock.setDisabledAt(new Date());
-
-        when(userRepositoryPort.findById(mockSutInput)).thenReturn(Optional.of(userMock));
-
-        Exception error = assertThrows(UserDisabledException.class, () -> {
-            sut.execute(mockSutInput);
-        });
-
-        assertEquals(MessageFormat.format("User with identifier {0} is disabled!", userMock.getId()), error.getMessage());
-        assertEquals("UserDisabledException", error.getClass().getSimpleName());
     }
 
     @Test
@@ -93,7 +52,7 @@ class GetProfileUserUsecaseTest {
             "any_description"
         );
 
-        when(userRepositoryPort.findById(mockSutInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutInput)).thenReturn(userMock);
         when(addressRepositoryPort.findByUserId(mockSutInput)).thenReturn(Optional.empty());
 
         Exception error = assertThrows(AddressNotFoundException.class, () -> {
@@ -129,7 +88,7 @@ class GetProfileUserUsecaseTest {
             "any_complement"
         );
 
-        when(userRepositoryPort.findById(mockSutInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutInput)).thenReturn(userMock);
         when(addressRepositoryPort.findByUserId(anyLong())).thenReturn(Optional.of(addressMock));
 
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
@@ -165,7 +124,7 @@ class GetProfileUserUsecaseTest {
             "any_complement"
         );
 
-        when(userRepositoryPort.findById(mockSutInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutInput)).thenReturn(userMock);
         when(addressRepositoryPort.findByUserId(anyLong())).thenReturn(Optional.of(addressMock));
 
         GetProfileUserOutput output = sut.execute(mockSutInput);

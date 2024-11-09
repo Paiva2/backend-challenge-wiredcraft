@@ -7,36 +7,23 @@ import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.ports.inbound.usecase.GetProfileUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
-import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.usecase.common.exception.AddressNotFoundException;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 
 @AllArgsConstructor
 @Builder
 public class GetProfileUserUsecase implements GetProfileUserUsecasePort {
-    private final UserRepositoryPort userRepositoryPort;
     private final AddressRepositoryPort addressRepositoryPort;
+    private final FindUserUsecase findUserUsecase;
 
     @Override
     public GetProfileUserOutput execute(Long userId) {
-        User user = findUser(userId);
-        checkUserDisabled(user);
+        User user = findUserUsecase.execute(userId);
 
         Address address = findAddress(user.getId());
         user.setAddress(address);
 
         return mountOutput(user);
-    }
-
-    private User findUser(Long userId) {
-        return userRepositoryPort.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void checkUserDisabled(User user) {
-        if (user.getDisabledAt() != null) {
-            throw new UserDisabledException(user.getId().toString());
-        }
     }
 
     private Address findAddress(Long userId) {

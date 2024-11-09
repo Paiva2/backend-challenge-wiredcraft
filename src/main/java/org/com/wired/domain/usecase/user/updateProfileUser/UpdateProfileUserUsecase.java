@@ -2,7 +2,6 @@ package org.com.wired.domain.usecase.user.updateProfileUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
 import org.com.wired.domain.entity.Address;
 import org.com.wired.domain.entity.User;
@@ -13,8 +12,7 @@ import org.com.wired.domain.ports.outbound.strategy.EmailValidatorStrategyPort;
 import org.com.wired.domain.ports.outbound.utils.PasswordUtilsPort;
 import org.com.wired.domain.usecase.common.exception.AddressNotFoundException;
 import org.com.wired.domain.usecase.common.exception.InvalidPropertyException;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.user.registerUser.exception.EmailAlreadyInUseException;
 
 import java.util.Optional;
@@ -27,10 +25,11 @@ public class UpdateProfileUserUsecase implements UpdateProfileUserUsecasePort {
     private final EmailValidatorStrategyPort emailValidatorStrategyPort;
     private final PasswordUtilsPort passwordUtilsPort;
 
+    private final FindUserUsecase findUserUsecase;
+
     @Override
     public UpdateProfileUserOutput execute(Long userId, User input) {
-        User user = findUser(userId);
-        checkUserDisabled(user);
+        User user = findUserUsecase.execute(userId);
 
         Address address = findAddress(user.getId());
 
@@ -53,16 +52,6 @@ public class UpdateProfileUserUsecase implements UpdateProfileUserUsecasePort {
         userUpdated.setAddress(address);
 
         return mountOutput(userUpdated);
-    }
-
-    private User findUser(Long userId) {
-        return userRepositoryPort.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void checkUserDisabled(User user) {
-        if (user.getDisabledAt() != null) {
-            throw new UserDisabledException(user.getId().toString());
-        }
     }
 
     private Address findAddress(Long userId) {

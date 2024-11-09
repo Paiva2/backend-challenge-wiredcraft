@@ -10,8 +10,7 @@ import org.com.wired.domain.ports.outbound.strategy.EmailValidatorStrategyPort;
 import org.com.wired.domain.ports.outbound.utils.PasswordUtilsPort;
 import org.com.wired.domain.usecase.common.exception.AddressNotFoundException;
 import org.com.wired.domain.usecase.common.exception.InvalidPropertyException;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.user.registerUser.exception.EmailAlreadyInUseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +42,9 @@ class UpdateProfileUserUsecaseTest {
     @Mock
     private PasswordUtilsPort passwordUtilsPort;
 
+    @Mock
+    private FindUserUsecase findUserUsecase;
+
     private UpdateProfileUserUsecase sut;
 
     @BeforeEach
@@ -52,38 +54,8 @@ class UpdateProfileUserUsecaseTest {
             .addressRepositoryPort(addressRepositoryPort)
             .emailValidatorStrategyPort(emailValidatorStrategyPort)
             .passwordUtilsPort(passwordUtilsPort)
+            .findUserUsecase(findUserUsecase)
             .build();
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserNotFound() {
-        Long mockUserId = 1L;
-        User mockSutInput = mockSutInput(mockUserId, "any_email", null);
-
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.empty());
-
-        Exception error = assertThrows(UserNotFoundException.class, () -> {
-            sut.execute(1L, mockSutInput);
-        });
-
-        assertEquals("User not found!", error.getMessage());
-        assertEquals("UserNotFoundException", error.getClass().getSimpleName());
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserDisabled() {
-        Long mockUserId = 1L;
-        User mockSutInput = mockSutInput(mockUserId, "any_email", null);
-        User mockUser = mockUser(mockUserId, mockSutInput.getEmail(), new Date());
-
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
-
-        Exception error = assertThrows(UserDisabledException.class, () -> {
-            sut.execute(1L, mockSutInput);
-        });
-
-        assertEquals(MessageFormat.format("User with identifier {0} is disabled!", mockUserId), error.getMessage());
-        assertEquals("UserDisabledException", error.getClass().getSimpleName());
     }
 
     @Test
@@ -92,7 +64,7 @@ class UpdateProfileUserUsecaseTest {
         User mockSutInput = mockSutInput(mockUserId, "any_email", null);
         User mockUser = mockUser(mockUserId, mockSutInput.getEmail(), null);
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.empty());
 
         Exception error = assertThrows(AddressNotFoundException.class, () -> {
@@ -110,7 +82,7 @@ class UpdateProfileUserUsecaseTest {
         User mockUser = mockUser(mockUserId, "any_current_email", null);
         Address mockAddress = mockAddress();
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.of(mockAddress));
         when(emailValidatorStrategyPort.execute(any())).thenReturn(false);
 
@@ -129,7 +101,7 @@ class UpdateProfileUserUsecaseTest {
         User mockUser = mockUser(mockUserId, "any_current_email", null);
         Address mockAddress = mockAddress();
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.of(mockAddress));
         when(emailValidatorStrategyPort.execute(any())).thenReturn(true);
 
@@ -151,7 +123,7 @@ class UpdateProfileUserUsecaseTest {
         User mockUser = mockUser(mockUserId, "any_new_email", null);
         Address mockAddress = mockAddress();
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.of(mockAddress));
         when(passwordUtilsPort.hasNecessaryLength(any())).thenReturn(false);
 
@@ -170,7 +142,7 @@ class UpdateProfileUserUsecaseTest {
         User mockUser = mockUser(mockUserId, "any_new_email", null);
         Address mockAddress = mockAddress();
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.of(mockAddress));
         when(passwordUtilsPort.hasNecessaryLength(any())).thenReturn(true);
         when(passwordUtilsPort.encode(any())).thenReturn("hashed_password");
@@ -210,7 +182,7 @@ class UpdateProfileUserUsecaseTest {
         User mockUser = mockUser(mockUserId, "any_new_email", null);
         Address mockAddress = mockAddress();
 
-        when(userRepositoryPort.findById(mockUserId)).thenReturn(Optional.of(mockUser));
+        when(findUserUsecase.execute(mockUserId)).thenReturn(mockUser);
         when(addressRepositoryPort.findByUserId(any())).thenReturn(Optional.of(mockAddress));
         when(emailValidatorStrategyPort.execute(any())).thenReturn(true);
         when(passwordUtilsPort.hasNecessaryLength(any())).thenReturn(true);

@@ -7,9 +7,7 @@ import org.com.wired.domain.entity.User;
 import org.com.wired.domain.entity.UserFollower;
 import org.com.wired.domain.ports.outbound.infra.persistence.FollowerRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
-import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.userFollower.followUser.exception.InvalidFollowException;
 import org.com.wired.domain.usecase.userFollower.followUser.exception.UserAlreadyFollowingException;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +28,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class FollowUserUsecaseTest {
     @Mock
-    private UserRepositoryPort userRepositoryPort;
+    private FindUserUsecase findUserUsecase;
 
     @Mock
     private UserFollowerRepositoryPort userFollowerRepositoryPort;
@@ -43,108 +41,10 @@ class FollowUserUsecaseTest {
     @BeforeEach
     void setUp() {
         this.sut = FollowUserUsecase.builder()
-            .userRepositoryPort(userRepositoryPort)
+            .findUserUsecase(findUserUsecase)
             .userFollowerRepositoryPort(userFollowerRepositoryPort)
             .followerRepositoryPort(followerRepositoryPort)
             .build();
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserNotFound() {
-        Long mockSutUserInput = 1L;
-        Long mockSutUserToFollowInput = 2L;
-
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.empty());
-
-        Exception error = assertThrows(UserNotFoundException.class, () -> {
-            sut.execute(mockSutUserInput, mockSutUserToFollowInput);
-        });
-
-        assertEquals("User not found!", error.getMessage());
-        assertEquals("UserNotFoundException", error.getClass().getSimpleName());
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserIsDisabled() {
-        Long mockSutUserInput = 1L;
-        Long mockSutUserToFollowInput = 2L;
-
-        User userMock = mockUser(
-            1L,
-            "any_name",
-            "any_email",
-            "any_profile_pic",
-            new Date(),
-            "any_description"
-        );
-        userMock.setDisabledAt(new Date());
-
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
-
-        Exception error = assertThrows(UserDisabledException.class, () -> {
-            sut.execute(mockSutUserInput, mockSutUserToFollowInput);
-        });
-
-        assertEquals(MessageFormat.format("User with identifier {0} is disabled!", userMock.getId()), error.getMessage());
-        assertEquals("UserDisabledException", error.getClass().getSimpleName());
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserToFollowNotFound() {
-        Long mockSutUserInput = 1L;
-        Long mockSutUserToFollowInput = 2L;
-
-        User userMock = mockUser(
-            1L,
-            "any_name",
-            "any_email",
-            "any_profile_pic",
-            new Date(),
-            "any_description"
-        );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.empty());
-
-        Exception error = assertThrows(UserNotFoundException.class, () -> {
-            sut.execute(mockSutUserInput, mockSutUserToFollowInput);
-        });
-
-        assertEquals("User not found!", error.getMessage());
-        assertEquals("UserNotFoundException", error.getClass().getSimpleName());
-    }
-
-    @Test
-    void shouldThrowExceptionIfUserToFollowDisabled() {
-        Long mockSutUserInput = 1L;
-        Long mockSutUserToFollowInput = 2L;
-
-        User userMock = mockUser(
-            1L,
-            "any_name",
-            "any_email",
-            "any_profile_pic",
-            new Date(),
-            "any_description"
-        );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
-
-        User userToFollowMock = mockUser(
-            2L,
-            "any_name",
-            "any_email",
-            "any_profile_pic",
-            new Date(),
-            "any_description"
-        );
-        userToFollowMock.setDisabledAt(new Date());
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userToFollowMock));
-
-        Exception error = assertThrows(UserDisabledException.class, () -> {
-            sut.execute(mockSutUserInput, mockSutUserToFollowInput);
-        });
-
-        assertEquals(MessageFormat.format("User with identifier {0} is disabled!", userToFollowMock.getId()), error.getMessage());
-        assertEquals("UserDisabledException", error.getClass().getSimpleName());
     }
 
     @Test
@@ -160,8 +60,8 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutUserInput)).thenReturn(userMock);
+        when(findUserUsecase.execute(mockSutUserToFollowInput)).thenReturn(userMock);
 
         Exception error = assertThrows(InvalidFollowException.class, () -> {
             sut.execute(mockSutUserInput, mockSutUserToFollowInput);
@@ -184,7 +84,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutUserInput)).thenReturn(userMock);
 
         User userToFollowMock = mockUser(
             2L,
@@ -194,7 +94,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userToFollowMock));
+        when(findUserUsecase.execute(mockSutUserToFollowInput)).thenReturn(userToFollowMock);
 
         UserFollower mockUserFollower = mockUserFollower(userMock, userToFollowMock);
         when(userFollowerRepositoryPort.findUserFollowing(anyLong(), anyLong())).thenReturn(Optional.of(mockUserFollower));
@@ -220,7 +120,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutUserInput)).thenReturn(userMock);
 
         User userToFollowMock = mockUser(
             2L,
@@ -230,7 +130,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userToFollowMock));
+        when(findUserUsecase.execute(mockSutUserToFollowInput)).thenReturn(userToFollowMock);
 
         when(userFollowerRepositoryPort.findUserFollowing(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -261,7 +161,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutUserInput)).thenReturn(userMock);
 
         User userToFollowMock = mockUser(
             2L,
@@ -271,7 +171,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userToFollowMock));
+        when(findUserUsecase.execute(mockSutUserToFollowInput)).thenReturn(userToFollowMock);
 
         when(userFollowerRepositoryPort.findUserFollowing(anyLong(), anyLong())).thenReturn(Optional.empty());
 
@@ -304,7 +204,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserInput)).thenReturn(Optional.of(userMock));
+        when(findUserUsecase.execute(mockSutUserInput)).thenReturn(userMock);
 
         User userToFollowMock = mockUser(
             2L,
@@ -314,7 +214,7 @@ class FollowUserUsecaseTest {
             new Date(),
             "any_description"
         );
-        when(userRepositoryPort.findById(mockSutUserToFollowInput)).thenReturn(Optional.of(userToFollowMock));
+        when(findUserUsecase.execute(mockSutUserToFollowInput)).thenReturn(userToFollowMock);
 
         when(userFollowerRepositoryPort.findUserFollowing(anyLong(), anyLong())).thenReturn(Optional.empty());
 

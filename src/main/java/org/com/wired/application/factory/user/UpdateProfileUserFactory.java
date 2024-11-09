@@ -6,6 +6,7 @@ import org.com.wired.adapters.strategy.emailValidator.emailRegexValidator.EmailR
 import org.com.wired.domain.ports.outbound.infra.persistence.AddressRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
 import org.com.wired.domain.ports.outbound.utils.PasswordUtilsPort;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.user.updateProfileUser.UpdateProfileUserUsecase;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ public class UpdateProfileUserFactory {
     private final UserRepositoryPort userRepositoryPort;
     private final AddressRepositoryPort addressRepositoryPort;
     private final PasswordUtilsPort passwordUtilsPort;
+    private final FindUserUsecase findUserUsecase;
 
 
     @Bean("UpdateProfileUserUsecase")
@@ -28,6 +30,7 @@ public class UpdateProfileUserFactory {
             .addressRepositoryPort(addressRepositoryPort)
             .emailValidatorStrategyPort(new EmailValidatorStrategyConcrete(new EmailRegexValidator()))
             .passwordUtilsPort(passwordUtilsPort)
+            .findUserUsecase(findUserUsecase)
             .build();
     }
 }

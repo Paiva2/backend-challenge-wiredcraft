@@ -9,9 +9,7 @@ import org.com.wired.domain.entity.UserFollower;
 import org.com.wired.domain.ports.inbound.usecase.FollowUserUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.FollowerRepositoryPort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
-import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.userFollower.followUser.exception.InvalidFollowException;
 import org.com.wired.domain.usecase.userFollower.followUser.exception.UserAlreadyFollowingException;
 
@@ -22,17 +20,15 @@ import java.util.Optional;
 @AllArgsConstructor
 @Builder
 public class FollowUserUsecase implements FollowUserUsecasePort {
-    private final UserRepositoryPort userRepositoryPort;
     private final UserFollowerRepositoryPort userFollowerRepositoryPort;
     private final FollowerRepositoryPort followerRepositoryPort;
+    private final FindUserUsecase findUserUsecase;
 
     @Override
     public FollowUserOutput execute(Long userId, Long userToFollowId) {
-        User user = findUser(userId);
-        checkUserDisabled(user);
+        User user = findUserUsecase.execute(userId);
 
-        User userToFollow = findUser(userToFollowId);
-        checkUserDisabled(userToFollow);
+        User userToFollow = findUserUsecase.execute(userToFollowId);
 
         checkUserFollowingValid(user, userToFollow);
         checkUserAlreadyFollow(user, userToFollow);
@@ -46,16 +42,6 @@ public class FollowUserUsecase implements FollowUserUsecasePort {
         userFollower.setCreatedAt(dateFollowed);
 
         return mountOutput(userFollower);
-    }
-
-    private User findUser(Long userId) {
-        return userRepositoryPort.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void checkUserDisabled(User user) {
-        if (user.getDisabledAt() != null) {
-            throw new UserDisabledException(user.getId().toString());
-        }
     }
 
     private void checkUserFollowingValid(User user, User userToFollow) {
