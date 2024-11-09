@@ -5,8 +5,8 @@ spring:
     time-zone: America/Sao_Paulo
   datasource:
     url: jdbc:postgresql://localhost:5432/backend-challenge
-    username: pg
-    password: pg123
+    username: ${PG_USERNAME}
+    password: ${PG_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
