@@ -15,6 +15,12 @@ public class UserFollowerMapper {
         UserFollower userFollower = new UserFollower();
         copyProperties(entityObject, userFollower);
 
+        if (entityObject.getKeyId() != null) {
+            UserFollower.KeyId keyId = new UserFollower.KeyId();
+            copyProperties(entityObject.getKeyId(), keyId);
+            userFollower.setKeyId(keyId);
+        }
+
         if (entityObject.getFollower() != null) {
             Follower follower = new Follower();
             copyProperties(entityObject.getFollower(), follower);

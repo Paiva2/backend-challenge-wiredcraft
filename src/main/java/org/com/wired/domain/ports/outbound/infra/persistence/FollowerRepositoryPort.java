@@ -4,4 +4,6 @@ import org.com.wired.domain.entity.Follower;
 
 public interface FollowerRepositoryPort {
     Follower persist(Follower follower);
+
+    void remove(Follower follower);
 }

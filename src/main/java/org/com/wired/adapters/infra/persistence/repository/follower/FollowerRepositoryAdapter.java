@@ -17,4 +17,9 @@ public class FollowerRepositoryAdapter implements FollowerRepositoryPort {
         FollowerEntity followerEntity = repository.save(FollowerMapper.toPersistence(follower));
         return FollowerMapper.toDomain(followerEntity);
     }
+
+    @Override
+    public void remove(Follower follower) {
+        repository.delete(FollowerMapper.toPersistence(follower));
+    }
 }

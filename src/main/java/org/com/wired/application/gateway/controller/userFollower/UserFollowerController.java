@@ -16,4 +16,8 @@ public interface UserFollowerController {
     @GetMapping("/user/list")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     ResponseEntity<ListUserFollowersPageDTO> listFollowers(Authentication authentication, @RequestParam(name = "page", required = false, defaultValue = "1") Integer page, @RequestParam(name = "size", required = false, defaultValue = "5") Integer size, @RequestParam(name = "followerName", required = false) String followerName, @RequestParam(name = "sort", required = false, defaultValue = "ASC") String sort);
+
+    @DeleteMapping("/remove/{userFollowedId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    ResponseEntity<Void> unfollowUser(Authentication authentication, @PathVariable("userFollowedId") Long userFollowedId);
 }

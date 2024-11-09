@@ -21,7 +21,14 @@ public class UserFollowerRepositoryAdapter implements UserFollowerRepositoryPort
 
     @Override
     public Optional<UserFollower> findUserFollowing(Long userId, Long userFollowingId) {
-        Optional<UserFollowerEntity> userFollower = repository.findFollowing(userId, userFollowingId);
+        Optional<UserFollowerEntity> userFollower = repository.findUserFollowing(userId, userFollowingId);
+        if (userFollower.isEmpty()) return Optional.empty();
+        return Optional.of(UserFollowerMapper.toDomain(userFollower.get()));
+    }
+
+    @Override
+    public Optional<UserFollower> findUserFollower(Long userId, Long userFollowerId) {
+        Optional<UserFollowerEntity> userFollower = repository.findUserFollower(userId, userFollowerId);
         if (userFollower.isEmpty()) return Optional.empty();
         return Optional.of(UserFollowerMapper.toDomain(userFollower.get()));
     }
@@ -30,6 +37,11 @@ public class UserFollowerRepositoryAdapter implements UserFollowerRepositoryPort
     public UserFollower persist(UserFollower userFollower) {
         UserFollowerEntity userFollowerEntity = repository.save(UserFollowerMapper.toPersistence(userFollower));
         return UserFollowerMapper.toDomain(userFollowerEntity);
+    }
+
+    @Override
+    public void remove(UserFollower userFollower) {
+        repository.delete(UserFollowerMapper.toPersistence(userFollower));
     }
 
     @Override
