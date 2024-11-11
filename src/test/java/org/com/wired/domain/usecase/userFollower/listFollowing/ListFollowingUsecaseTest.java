@@ -1,9 +1,9 @@
-package org.com.wired.domain.usecase.userFollower.listFollowers;
+package org.com.wired.domain.usecase.userFollower.listFollowing;
 
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
 import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
-import org.com.wired.domain.usecase.userFollower.listFollowers.dto.ListUserFollowersPageDTO;
+import org.com.wired.domain.usecase.userFollower.listFollowing.dto.ListFollowingDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,28 +11,26 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ListFollowersUsecaseTest {
+class ListFollowingUsecaseTest {
     @Mock
     private FindUserUsecase findUserUsecase;
 
     @Mock
     private UserFollowerRepositoryPort userFollowerRepositoryPort;
 
-    @Mock
-    private ListFollowersUsecase sut;
+    private ListFollowingUsecase sut;
 
     @BeforeEach
     void setUp() {
-        this.sut = ListFollowersUsecase.builder()
+        this.sut = ListFollowingUsecase.builder()
             .findUserUsecase(findUserUsecase)
             .userFollowerRepositoryPort(userFollowerRepositoryPort)
             .build();
@@ -43,10 +41,10 @@ class ListFollowersUsecaseTest {
         Long userMockId = 1L;
         int pageNumberMock = -1;
 
-        User mockUser = mockUser(userMockId);
+        User userMock = mockUser(userMockId);
 
-        when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -56,11 +54,11 @@ class ListFollowersUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, pageNumberMock, 5, null, "DESC");
+        sut.execute(userMockId, pageNumberMock, 5, null, "ASC");
 
         ArgumentCaptor<Integer> pageNumberCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), pageNumberCaptor.capture(), anyInt(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), pageNumberCaptor.capture(), anyInt(), any(), any());
 
         assertEquals(1, pageNumberCaptor.getValue());
     }
@@ -70,10 +68,10 @@ class ListFollowersUsecaseTest {
         Long userMockId = 1L;
         Integer mockPageSize = 1;
 
-        User mockUser = mockUser(userMockId);
+        User userMock = mockUser(userMockId);
 
-        when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -87,7 +85,7 @@ class ListFollowersUsecaseTest {
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any());
 
         assertEquals(5, sizeCaptor.getValue());
     }
@@ -97,12 +95,12 @@ class ListFollowersUsecaseTest {
         Long userMockId = 1L;
         Integer mockPageSize = 51;
 
-        User mockUser = mockUser(userMockId);
+        User userMock = mockUser(userMockId);
 
-        when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
             .page(1)
-            .size(50)
+            .size(5)
             .isLast(true)
             .total(1L)
             .totalPages(1)
@@ -114,7 +112,7 @@ class ListFollowersUsecaseTest {
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any());
 
         assertEquals(50, sizeCaptor.getValue());
     }
@@ -125,25 +123,26 @@ class ListFollowersUsecaseTest {
         int pageProvided = 1;
         int sizeProvided = 5;
 
-        User mockUser = mockUser(userMockId);
+        User userMock = mockUser(userMockId);
 
-        when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
             .total(1L)
             .totalPages(1)
-            .followers(List.of(ListUserFollowersPageDTO.UserFollowersDto.builder()
-                .followerId(2L)
-                .name("any_name")
-                .email("any_email")
-                .followedAt(new Date().toString())
-                .build()
-            )).build()
+            .followers(List.of(ListFollowingDTO.UserFollowingDTO.builder()
+                .followId(1L)
+                .userFollowedId(2L)
+                .userFollowedEmail("any_email")
+                .userFollowedName("any_name")
+                .followingSince("any_date")
+                .build()))
+            .build()
         );
 
-        ListUserFollowersPageDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC");
+        ListFollowingDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC");
 
         assertEquals(pageProvided, output.getPage());
         assertEquals(sizeProvided, output.getSize());

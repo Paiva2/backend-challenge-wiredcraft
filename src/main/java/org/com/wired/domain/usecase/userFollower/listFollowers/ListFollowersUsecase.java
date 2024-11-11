@@ -5,21 +5,18 @@ import lombok.Builder;
 import org.com.wired.domain.entity.User;
 import org.com.wired.domain.ports.inbound.usecase.ListFollowersUsecasePort;
 import org.com.wired.domain.ports.outbound.infra.persistence.UserFollowerRepositoryPort;
-import org.com.wired.domain.ports.outbound.infra.persistence.UserRepositoryPort;
-import org.com.wired.domain.usecase.common.exception.UserDisabledException;
-import org.com.wired.domain.usecase.common.exception.UserNotFoundException;
+import org.com.wired.domain.usecase.user.findUserUsecase.FindUserUsecase;
 import org.com.wired.domain.usecase.userFollower.listFollowers.dto.ListUserFollowersPageDTO;
 
 @AllArgsConstructor
 @Builder
 public class ListFollowersUsecase implements ListFollowersUsecasePort {
-    private final UserRepositoryPort userRepositoryPort;
+    private final FindUserUsecase findUserUsecase;
     private final UserFollowerRepositoryPort userFollowerRepositoryPort;
 
     @Override
     public ListUserFollowersPageDTO execute(Long userId, Integer page, Integer perPage, String followerName, String sort) {
-        User user = findUser(userId);
-        checkUserDisabled(user);
+        User user = findUserUsecase.execute(userId);
 
         if (page < 1) {
             page = 1;
@@ -32,16 +29,6 @@ public class ListFollowersUsecase implements ListFollowersUsecasePort {
         }
 
         return findUserFollowers(user.getId(), page, perPage, followerName, sort);
-    }
-
-    private User findUser(Long userId) {
-        return userRepositoryPort.findById(userId).orElseThrow(UserNotFoundException::new);
-    }
-
-    private void checkUserDisabled(User user) {
-        if (user.getDisabledAt() != null) {
-            throw new UserDisabledException(user.getId().toString());
-        }
     }
 
     private ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort) {
