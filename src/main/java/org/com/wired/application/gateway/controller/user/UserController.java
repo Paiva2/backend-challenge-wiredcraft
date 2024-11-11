@@ -7,6 +7,7 @@ import org.com.wired.application.gateway.input.UpdateProfileUserInput;
 import org.com.wired.application.gateway.output.GetProfileUserOutput;
 import org.com.wired.application.gateway.output.RegisterUserOutput;
 import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
+import org.com.wired.domain.usecase.user.listUsers.dto.ListUsersPageDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,10 @@ public interface UserController {
     @GetMapping("/profile")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     ResponseEntity<GetProfileUserOutput> getProfile(Authentication authentication);
+
+    @GetMapping("/list")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    ResponseEntity<ListUsersPageDTO> getUsersList(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page, @RequestParam(value = "size", required = false, defaultValue = "1") Integer size, @RequestParam(value = "name", required = false) String name);
 
     @PatchMapping("/profile/update")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")

@@ -11,6 +11,8 @@ import org.com.wired.application.gateway.output.UpdateProfileUserOutput;
 import org.com.wired.domain.usecase.user.authenticateUser.AuthenticateUserUsecase;
 import org.com.wired.domain.usecase.user.disableAccount.DisableAccountUsecase;
 import org.com.wired.domain.usecase.user.getProfileUser.GetProfileUserUsecase;
+import org.com.wired.domain.usecase.user.listUsers.ListUsersUsecase;
+import org.com.wired.domain.usecase.user.listUsers.dto.ListUsersPageDTO;
 import org.com.wired.domain.usecase.user.registerUser.RegisterUserUsecase;
 import org.com.wired.domain.usecase.user.updateProfileUser.UpdateProfileUserUsecase;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ public class UserControllerImpl implements UserController {
     private final GetProfileUserUsecase getProfileUserUsecase;
     private final UpdateProfileUserUsecase updateProfileUserUsecase;
     private final DisableAccountUsecase disableAccountUsecase;
+    private final ListUsersUsecase listUsersUsecase;
 
     private final AuthenticationStrategyConcrete authenticationStrategyConcrete;
 
@@ -50,6 +53,12 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<GetProfileUserOutput> getProfile(Authentication authentication) {
         Long subjectId = Long.parseLong(authentication.getName());
         GetProfileUserOutput output = getProfileUserUsecase.execute(subjectId);
+        return new ResponseEntity<>(output, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<ListUsersPageDTO> getUsersList(Integer page, Integer size, String name) {
+        ListUsersPageDTO output = listUsersUsecase.execute(page, size, name);
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
