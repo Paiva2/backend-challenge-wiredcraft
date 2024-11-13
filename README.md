@@ -13,7 +13,8 @@ in https://github.com/CollabCodeTech/backend-challenges
 - Spring Boot
 - Spring Security
 - Swagger
-- ...
+- Postgres
+- Docker
 
 ### Requirements
 
@@ -55,7 +56,3 @@ Build a RESTful API that can `get/create/update/delete` user data from a persist
   longitude), can you build an API that,
     - given a user name
     - return the nearby friends
-
-### How to run
-
-...
