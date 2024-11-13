@@ -13,7 +13,7 @@ public class ListFollowingUsecase {
     private final FindUserUsecase findUserUsecase;
     private final UserFollowerRepositoryPort userFollowerRepositoryPort;
 
-    public ListFollowingDTO execute(Long userId, int page, int size, String followingName, String direction) {
+    public ListFollowingDTO execute(Long userId, int page, int size, String followingName, String direction, Integer maxDistanceKm) {
         User user = findUserUsecase.execute(userId);
 
         if (page < 1) {
@@ -26,11 +26,11 @@ public class ListFollowingUsecase {
             size = 50;
         }
 
-        ListFollowingDTO followingList = findFollowingList(user.getId(), page, size, followingName, direction);
+        ListFollowingDTO followingList = findFollowingList(user.getId(), page, size, followingName, direction, maxDistanceKm);
         return followingList;
     }
 
-    private ListFollowingDTO findFollowingList(Long userId, int page, int size, String followingName, String direction) {
-        return userFollowerRepositoryPort.listFollowing(userId, page, size, followingName, direction);
+    private ListFollowingDTO findFollowingList(Long userId, int page, int size, String followingName, String direction, Integer maxDistanceKm) {
+        return userFollowerRepositoryPort.listFollowing(userId, page, size, followingName, direction, maxDistanceKm);
     }
 }

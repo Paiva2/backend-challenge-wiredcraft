@@ -15,7 +15,7 @@ public class ListFollowersUsecase implements ListFollowersUsecasePort {
     private final UserFollowerRepositoryPort userFollowerRepositoryPort;
 
     @Override
-    public ListUserFollowersPageDTO execute(Long userId, Integer page, Integer perPage, String followerName, String sort) {
+    public ListUserFollowersPageDTO execute(Long userId, Integer page, Integer perPage, String followerName, String sort, Integer maxKmDistance) {
         User user = findUserUsecase.execute(userId);
 
         if (page < 1) {
@@ -28,10 +28,10 @@ public class ListFollowersUsecase implements ListFollowersUsecasePort {
             perPage = 50;
         }
 
-        return findUserFollowers(user.getId(), page, perPage, followerName, sort);
+        return findUserFollowers(user.getId(), page, perPage, followerName, sort, maxKmDistance);
     }
 
-    private ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort) {
-        return userFollowerRepositoryPort.findUserFollowers(userId, page, perPage, followerName, sort);
+    private ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort, Integer maxKmDistance) {
+        return userFollowerRepositoryPort.findUserFollowers(userId, page, perPage, followerName, sort, maxKmDistance);
     }
 }

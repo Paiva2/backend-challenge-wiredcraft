@@ -43,6 +43,12 @@ public class AddressEntity {
     @Column(name = "adr_complement", nullable = true, length = 100)
     private String complement;
 
+    @Column(name = "adr_latitude", nullable = true, length = 100)
+    private Double latitude;
+
+    @Column(name = "adr_longitude", nullable = true, length = 100)
+    private Double longitude;
+
     @Column(name = "adr_updated_at", nullable = true)
     @UpdateTimestamp
     private Date updatedAt;

@@ -21,6 +21,8 @@ public class Address {
     private String country;
     private String zipCode;
     private String complement;
+    private Double latitude;
+    private Double longitude;
     private Date createdAt;
     private Date updatedAt;
 

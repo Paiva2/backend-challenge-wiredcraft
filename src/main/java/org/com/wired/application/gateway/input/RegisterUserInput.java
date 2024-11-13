@@ -58,6 +58,8 @@ public class RegisterUserInput {
                 .country(input.getAddress().getCountry())
                 .zipCode(input.getAddress().getZipCode())
                 .complement(input.getAddress().getComplement())
+                .longitude(input.getAddress().getLongitude())
+                .latitude(input.getAddress().getLatitude())
                 .build())
             .build();
     }
@@ -96,5 +98,11 @@ public class RegisterUserInput {
         private String zipCode;
 
         private String complement;
+
+        @NotNull
+        private Double longitude;
+
+        @NotNull
+        private Double latitude;
     }
 }

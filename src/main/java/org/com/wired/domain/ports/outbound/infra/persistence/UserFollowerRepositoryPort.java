@@ -15,7 +15,7 @@ public interface UserFollowerRepositoryPort {
 
     void remove(UserFollower userFollower);
 
-    ListFollowingDTO listFollowing(Long userId, int page, int size, String followingName, String direction);
+    ListFollowingDTO listFollowing(Long userId, int page, int size, String followingName, String direction, Integer maxDistanceKm);
 
-    ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort);
+    ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort, Integer maxKmDistance);
 }

@@ -44,7 +44,7 @@ class ListFollowingUsecaseTest {
         User userMock = mockUser(userMockId);
 
         when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
-        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -54,11 +54,11 @@ class ListFollowingUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, pageNumberMock, 5, null, "ASC");
+        sut.execute(userMockId, pageNumberMock, 5, null, "ASC", 10);
 
         ArgumentCaptor<Integer> pageNumberCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), pageNumberCaptor.capture(), anyInt(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), pageNumberCaptor.capture(), anyInt(), any(), any(), anyInt());
 
         assertEquals(1, pageNumberCaptor.getValue());
     }
@@ -71,7 +71,7 @@ class ListFollowingUsecaseTest {
         User userMock = mockUser(userMockId);
 
         when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
-        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -81,11 +81,11 @@ class ListFollowingUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, 1, mockPageSize, null, "DESC");
+        sut.execute(userMockId, 1, mockPageSize, null, "DESC", 10);
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any(), anyInt());
 
         assertEquals(5, sizeCaptor.getValue());
     }
@@ -98,7 +98,7 @@ class ListFollowingUsecaseTest {
         User userMock = mockUser(userMockId);
 
         when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
-        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -108,11 +108,11 @@ class ListFollowingUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, 1, mockPageSize, null, "DESC");
+        sut.execute(userMockId, 1, mockPageSize, null, "DESC", 10);
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).listFollowing(any(), anyInt(), sizeCaptor.capture(), any(), any(), anyInt());
 
         assertEquals(50, sizeCaptor.getValue());
     }
@@ -126,7 +126,7 @@ class ListFollowingUsecaseTest {
         User userMock = mockUser(userMockId);
 
         when(findUserUsecase.execute(userMockId)).thenReturn(userMock);
-        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListFollowingDTO.builder()
+        when(userFollowerRepositoryPort.listFollowing(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListFollowingDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -142,7 +142,7 @@ class ListFollowingUsecaseTest {
             .build()
         );
 
-        ListFollowingDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC");
+        ListFollowingDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC", 10);
 
         assertEquals(pageProvided, output.getPage());
         assertEquals(sizeProvided, output.getSize());

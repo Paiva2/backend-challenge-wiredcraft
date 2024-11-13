@@ -31,16 +31,16 @@ public class UserFollowerControllerImpl implements UserFollowerController {
     }
 
     @Override
-    public ResponseEntity<ListUserFollowersPageDTO> listFollowers(Authentication authentication, Integer page, Integer size, String followerName, String sort) {
+    public ResponseEntity<ListUserFollowersPageDTO> listFollowers(Authentication authentication, Integer page, Integer size, String followerName, String sort, Integer maxKmDistance) {
         Long subjectId = parseSubjectId(authentication);
-        ListUserFollowersPageDTO output = listFollowersUsecase.execute(subjectId, page, size, followerName, sort);
+        ListUserFollowersPageDTO output = listFollowersUsecase.execute(subjectId, page, size, followerName, sort, maxKmDistance);
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<ListFollowingDTO> listFollowing(Authentication authentication, Integer page, Integer size, String followingName, String sort) {
+    public ResponseEntity<ListFollowingDTO> listFollowing(Authentication authentication, Integer page, Integer size, String followingName, String sort, Integer maxDistanceKm) {
         Long subjectId = parseSubjectId(authentication);
-        ListFollowingDTO output = listFollowingUsecase.execute(subjectId, page, size, followingName, sort);
+        ListFollowingDTO output = listFollowingUsecase.execute(subjectId, page, size, followingName, sort, maxDistanceKm);
         return new ResponseEntity<>(output, HttpStatus.OK);
     }
 

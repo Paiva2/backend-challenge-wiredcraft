@@ -46,9 +46,9 @@ public class UserFollowerRepositoryAdapter implements UserFollowerRepositoryPort
     }
 
     @Override
-    public ListFollowingDTO listFollowing(Long userId, int page, int size, String followingName, String sort) {
+    public ListFollowingDTO listFollowing(Long userId, int page, int size, String followingName, String sort, Integer maxDistanceKm) {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.Direction.fromString(sort), "usr.usr_name");
-        Page<UserFollowerEntity> userFollowingPage = repository.findUserFollowersByFollowUserId(userId, followingName, pageable);
+        Page<UserFollowerEntity> userFollowingPage = repository.findUserFollowersByFollowUserId(userId, followingName, maxDistanceKm, pageable);
         Page<UserFollower> userFollowing = userFollowingPage.map(UserFollowerMapper::toDomain);
 
         return ListFollowingDTO.builder()
@@ -61,9 +61,9 @@ public class UserFollowerRepositoryAdapter implements UserFollowerRepositoryPort
     }
 
     @Override
-    public ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort) {
+    public ListUserFollowersPageDTO findUserFollowers(Long userId, int page, int perPage, String followerName, String sort, Integer maxKmDistance) {
         Pageable pageable = PageRequest.of(page - 1, perPage, Sort.Direction.fromString(sort), "ufol.usr_name");
-        Page<UserFollowerEntity> userFollowersPage = repository.findUserFollowers(userId, followerName, pageable);
+        Page<UserFollowerEntity> userFollowersPage = repository.findUserFollowers(userId, followerName, maxKmDistance, pageable);
         Page<UserFollower> userFollowers = userFollowersPage.map(UserFollowerMapper::toDomain);
 
         return ListUserFollowersPageDTO.builder()

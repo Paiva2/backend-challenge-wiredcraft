@@ -46,7 +46,7 @@ class ListFollowersUsecaseTest {
         User mockUser = mockUser(userMockId);
 
         when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListUserFollowersPageDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -56,11 +56,11 @@ class ListFollowersUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, pageNumberMock, 5, null, "DESC");
+        sut.execute(userMockId, pageNumberMock, 5, null, "DESC", 10);
 
         ArgumentCaptor<Integer> pageNumberCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), pageNumberCaptor.capture(), anyInt(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), pageNumberCaptor.capture(), anyInt(), any(), any(), anyInt());
 
         assertEquals(1, pageNumberCaptor.getValue());
     }
@@ -73,7 +73,7 @@ class ListFollowersUsecaseTest {
         User mockUser = mockUser(userMockId);
 
         when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListUserFollowersPageDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -83,11 +83,11 @@ class ListFollowersUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, 1, mockPageSize, null, "DESC");
+        sut.execute(userMockId, 1, mockPageSize, null, "DESC", 10);
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any(), anyInt());
 
         assertEquals(5, sizeCaptor.getValue());
     }
@@ -100,7 +100,7 @@ class ListFollowersUsecaseTest {
         User mockUser = mockUser(userMockId);
 
         when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListUserFollowersPageDTO.builder()
             .page(1)
             .size(50)
             .isLast(true)
@@ -110,11 +110,11 @@ class ListFollowersUsecaseTest {
             .build()
         );
 
-        sut.execute(userMockId, 1, mockPageSize, null, "DESC");
+        sut.execute(userMockId, 1, mockPageSize, null, "DESC", 10);
 
         ArgumentCaptor<Integer> sizeCaptor = ArgumentCaptor.forClass(int.class);
 
-        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any());
+        verify(userFollowerRepositoryPort, times(1)).findUserFollowers(any(), anyInt(), sizeCaptor.capture(), any(), any(), anyInt());
 
         assertEquals(50, sizeCaptor.getValue());
     }
@@ -128,7 +128,7 @@ class ListFollowersUsecaseTest {
         User mockUser = mockUser(userMockId);
 
         when(findUserUsecase.execute(anyLong())).thenReturn(mockUser);
-        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any())).thenReturn(ListUserFollowersPageDTO.builder()
+        when(userFollowerRepositoryPort.findUserFollowers(any(), anyInt(), anyInt(), any(), any(), anyInt())).thenReturn(ListUserFollowersPageDTO.builder()
             .page(1)
             .size(5)
             .isLast(true)
@@ -143,7 +143,7 @@ class ListFollowersUsecaseTest {
             )).build()
         );
 
-        ListUserFollowersPageDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC");
+        ListUserFollowersPageDTO output = sut.execute(userMockId, pageProvided, sizeProvided, null, "DESC", 10);
 
         assertEquals(pageProvided, output.getPage());
         assertEquals(sizeProvided, output.getSize());
